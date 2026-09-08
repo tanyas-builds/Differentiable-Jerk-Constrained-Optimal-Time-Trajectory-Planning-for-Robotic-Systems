@@ -44,12 +44,6 @@ This is baseline/comparison code — see Roadmap for what's still to be added.
 - **UR3** — where the encoder baud-rate limitation was diagnosed
 - **myCobot 280 Pi** — used for hardware-in-the-loop validation via ROS2/Python
 
-### Hardware-in-the-Loop
-
-![Long-exposure motion trail of the myCobot 280 Pi executing a planned trajectory](assets/trajectory_motion_trail.jpg)
-
-*Long-exposure capture of the myCobot 280 Pi executing a planned trajectory — used to visually confirm smoothness of motion on real hardware, not just in simulation.*
-
 ## Repository Structure (current)
 
 ```text
