@@ -54,12 +54,19 @@ All 5 test paths, both algorithms, both plot types (kinematic profiles + end-eff
 - **10–20% reduction** in execution time vs. the 3-5-3 / 6-7-6 baselines, across the 5 test configurations
 - **Tradeoff:** 15% of motions were *longer* after optimization — the algorithm isn't a strict win on every trial, it trades some execution time for reduced mechanical wear on the joints
 - Jerk **mathematically bounded below 200 deg/s³** — this is a guaranteed design bound built into the optimization, not an empirically observed reduction (the Path 1 plot above shows actual peak jerk around ±60 deg/s³, well inside that bound)
-- Hardware-in-the-loop validation on the myCobot 280 Pi via Python/ROS2, following MATLAB simulation
+- Hardware-in-the-loop validation on the myCobot 280 Pi via the pymycobot SDK, following MATLAB simulation
+
+## Hardware Deployment
+
+- **`hardware/deploy_trajectory.py`** — streams a MATLAB-generated `.mat` joint-angle trajectory to the myCobot 280 Pi over direct serial (`/dev/ttyAMA0`, matched baud rate), at a controlled send interval — this is the script that respects the encoder update-rate ceiling described above
+- **`hardware/stream_csv_trajectory.py`** — streams a CSV trajectory to the arm with joint-limit safety clipping and dynamically computed per-step speeds, so motion stays smooth without stopping at each waypoint
+
+Both talk to the arm via **pymycobot** (Elephant Robotics' Python SDK) over direct serial or socket — not a ROS2 node. If you're looking for `rclpy`/topics/launch files, they're not here yet (see Roadmap).
 
 ## Hardware
 
 - **UR3** — where the encoder baud-rate limitation was diagnosed
-- **myCobot 280 Pi** — used for hardware-in-the-loop validation via ROS2/Python
+- **myCobot 280 Pi** — used for hardware-in-the-loop validation via the pymycobot SDK
 
 ## Repository Structure
 
@@ -68,6 +75,9 @@ All 5 test paths, both algorithms, both plot types (kinematic profiles + end-eff
 │   └── results/
 │       ├── 676-baseline/          # 10 plots + 1 animation (6-7-6 polynomial)
 │       └── gaussian-wmopso/       # 10 plots + 1 animation (W-MOPSO Gaussian S-curve)
+├── hardware/
+│   ├── deploy_trajectory.py       # Streams a .mat trajectory to the arm over serial
+│   └── stream_csv_trajectory.py   # Streams a CSV trajectory with joint-limit clipping
 ├── publications/
 │   └── southeastcon-2025/         # Paper + slides for the SoutheastCon 2025 publication
 ├── src/
@@ -86,8 +96,8 @@ All 5 test paths, both algorithms, both plot types (kinematic profiles + end-eff
 - [x] Upload the W-MOPSO optimizer + Gaussian S-curve trajectory generator
 - [x] Add the thesis PDF
 - [x] Add jerk/velocity smoothness plots and hardware-in-the-loop animations
-- [ ] Add the ROS2/Python hardware-in-the-loop validation code
-- [ ] Package the ROS2 code as a standalone, launchable ROS2 package
+- [x] Add the pymycobot hardware-deployment scripts (direct serial/socket control)
+- [ ] Wrap the pymycobot hardware interface in an actual ROS2 node (currently direct SDK calls only — this would be new work, not a repackage)
 
 ## Related Publications
 
